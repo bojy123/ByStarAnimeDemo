@@ -12,12 +12,12 @@
 
 @interface ByAnimationManager ()
 {
-    NSTimer *_timer;
     NSInteger _timeCount;
 }
 
 @property (nonatomic, assign) ByStarView *yellowView;
 @property (nonatomic, assign) UIButton *statBtn;
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
