@@ -24,7 +24,7 @@
 @implementation ByAnimationManager
 
 + (ByAnimationManager *)sharedManager {
-    static id byAnimationManager;
+    static id byAnimationManager = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         byAnimationManager = [self new];
@@ -48,15 +48,16 @@
         self.yellowView = yellowView;
     }
     
+    __weak ByAnimationManager *sself = self;
     [UIView animateWithDuration:0.25 animations:^{
         //放大黄色圆底
-        _yellowView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+        sself.yellowView.transform = CGAffineTransformMakeScale(1.3, 1.3);
     } completion:^(BOOL finished) {
         
         //定时器，用drawRect逐渐镂空消失效果
         _timeCount = 0;
-        [self stopTimer];
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.015 target:self selector:@selector(timeClick) userInfo:nil repeats:YES];
+        [sself stopTimer];
+        sself.timer = [NSTimer scheduledTimerWithTimeInterval:0.015 target:self selector:@selector(timeClick) userInfo:nil repeats:YES];
     }];
 }
 
@@ -65,6 +66,8 @@
     _yellowView.width = _timeCount;
     [_yellowView setNeedsDisplay];
     _timeCount ++;
+    
+    __weak ByAnimationManager *sself = self;
 
     //到达指定大小，设置实心星星选中效果
     if (_timeCount == 21) {
@@ -81,10 +84,10 @@
         
         //放大缩小效果
         [UIView animateWithDuration:0.25 animations:^{
-            self.statBtn.transform = CGAffineTransformMakeScale(1.5, 1.5);
+            sself.statBtn.transform = CGAffineTransformMakeScale(1.5, 1.5);
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.25 animations:^{
-                self.statBtn.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                sself.statBtn.transform = CGAffineTransformMakeScale(1.0, 1.0);
             }];
         }];
     }
